@@ -2,6 +2,7 @@ package com.sketch.TestingApp.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.context.annotation.Configuration;
 
 @Entity
 @Getter
@@ -15,6 +16,7 @@ public class Driver {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String name;
     private String team;
     private Integer exp;

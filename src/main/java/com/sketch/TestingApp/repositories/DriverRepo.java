@@ -10,4 +10,5 @@ import java.util.List;
 public interface DriverRepo extends JpaRepository<Driver, Long> {
 
     List<Driver> findByTeam(String team);
+    List<Driver> findByName(String name);
 }
