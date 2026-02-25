@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Import;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -56,6 +56,20 @@ class DriverServiceImplTest {
     }
 
     @Test
+    void testGetAllDrivers_WhenADriverExist(){
+        when(driverRepo.findAll()).thenReturn(List.of(mockDriver));
+        assertThat(driverService.getAllDrivers()).isNotEmpty();
+        assertThat(driverService.getAllDrivers()).isNotNull();
+    }
+
+    @Test
+    void testGetAllDrivers_WhenDriverDoesNotExist(){
+        when(driverRepo.findAll()).thenReturn(List.of());
+        assertThat(driverService.getAllDrivers()).isNotNull();
+        assertThat(driverService.getAllDrivers()).isEmpty();
+    }
+
+    @Test
     void testGetDriverById_WhenIdIdCorrect(){
         Long id = mockDriver.getId();
         //ASSIGN
@@ -70,6 +84,18 @@ class DriverServiceImplTest {
         assertThat(driverDto.getId()).isEqualTo(id);
         assertThat(driverDto.getName()).isEqualTo(mockDriver.getName());
         verify(driverRepo, times(1)).findById(id);
+    }
+
+
+    @Test
+    void testGetDriverById_WhenIdNotCorrect(){
+        when(driverRepo.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> driverService.getDriverById(1L))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Driver does not exist with id 1");
+        verify(driverRepo, times(1)).findById(1L);
+
     }
 
     @Test
@@ -90,6 +116,58 @@ class DriverServiceImplTest {
         assertThat(driverDto.getName()).isEqualTo(mockDriver.getName());
         verify(driverRepo).save(any(Driver.class));
 
+    }
+
+    @Test
+    void testCreateDriver_WhenDriverIsNotValid(){
+        when(driverRepo.findByName(anyString())).thenReturn(List.of(mockDriver));
+
+        assertThatThrownBy(()-> driverService.createDriver(modelMapper.map(mockDriver, DriverDto.class)))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("driver already exists with name "+mockDriver.getName());
+        verify(driverRepo,times(1)).findByName(mockDriver.getName());
+        verify(driverRepo, never()).save(any(Driver.class));
+    }
+
+    @Test
+    void testUpdateDriver_WhenDriverIdNotFound(){
+        when(driverRepo.existsById(anyLong())).thenReturn(false);
+
+        assertThatThrownBy(() -> driverService.updateDriver(1L, modelMapper.map(mockDriver, DriverDto.class)))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Driver does not exists with id 1");
+        verify(driverRepo, times(1)).existsById(1L);
+        verify(driverRepo, never()).save(any(Driver.class));
+    }
+
+    @Test
+    void testUpdateDriver_WhenDriverIdIsValid(){
+        when(driverRepo.existsById(anyLong())).thenReturn(true);
+        when(driverRepo.save(any(Driver.class))).thenReturn(mockDriver);
+
+        mockDriver.setTeam("updatedteam");
+        mockDriver.setName("updatedName");
+
+        DriverDto driverDto = driverService.updateDriver(1L, modelMapper.map(mockDriver, DriverDto.class));
+        assertThat(driverDto).isEqualTo(modelMapper.map(mockDriver, DriverDto.class));
+        verify(driverRepo, times(1)).save(any(Driver.class));
+    }
+
+    @Test
+    void testDeleteDriver_WhenDriverDoesNotExist(){
+        when(driverRepo.existsById(anyLong())).thenReturn(false);
+        assertThatThrownBy(() -> driverService.deleteDriver(1L))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Driver does not exists with id 1");
+        verify(driverRepo, times(1)).existsById(1L);
+    }
+
+    @Test
+    void testDeleteDriver_WhenDriverExists(){
+        when(driverRepo.existsById(anyLong())).thenReturn(true);
+        assertThatCode(() -> driverService.deleteDriver(1L))
+                .doesNotThrowAnyException();
+        verify(driverRepo, times(1)).deleteById(1L);
     }
 
 }
