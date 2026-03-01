@@ -1,0 +1,182 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > DriverServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.sketch.TestingApp.services.impl</a>
+</div>
+
+<h1>Coverage Summary for Class: DriverServiceImpl (com.sketch.TestingApp.services.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DriverServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (24/24)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.sketch.TestingApp.services.impl;
+&nbsp;
+&nbsp;import com.sketch.TestingApp.dto.DriverDto;
+&nbsp;import com.sketch.TestingApp.entities.Driver;
+&nbsp;import com.sketch.TestingApp.exceptions.ResourceNotFoundException;
+&nbsp;import com.sketch.TestingApp.repositories.DriverRepo;
+&nbsp;import com.sketch.TestingApp.services.DriverService;
+&nbsp;import lombok.RequiredArgsConstructor;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;import org.modelmapper.ModelMapper;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Service
+&nbsp;@RequiredArgsConstructor
+<b class="fc">&nbsp;@Slf4j</b>
+&nbsp;public class DriverServiceImpl implements DriverService {
+&nbsp;
+&nbsp;    private final DriverRepo repo;
+&nbsp;    private final ModelMapper mapper;
+&nbsp;
+&nbsp;    public List&lt;DriverDto&gt; getAllDrivers(){
+<b class="fc">&nbsp;        return repo.findAll().stream().map(</b>
+<b class="fc">&nbsp;                driver -&gt; mapper.map(driver, DriverDto.class)).toList();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public DriverDto getDriverById(Long id){
+<b class="fc">&nbsp;        log.info(&quot;fetch driver with id {}&quot;, id);</b>
+<b class="fc">&nbsp;        Driver driver = repo.findById(id).orElseThrow(() -&gt;{</b>
+<b class="fc">&nbsp;                log.error(&quot;driver with id {} not found&quot;, id);</b>
+<b class="fc">&nbsp;                return new ResourceNotFoundException(&quot;Driver does not exist with id &quot;+id);</b>
+&nbsp;        });
+<b class="fc">&nbsp;        log.info(&quot;successfully fetched driver with id {}&quot;, id);</b>
+<b class="fc">&nbsp;        return mapper.map(driver, DriverDto.class);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public DriverDto createDriver(DriverDto driverDto){
+<b class="fc">&nbsp;        List&lt;Driver&gt; drivers = repo.findByName(driverDto.getName());</b>
+<b class="fc">&nbsp;        if(!drivers.isEmpty()){</b>
+<b class="fc">&nbsp;            log.info(&quot;driver already exists with name {}&quot;, driverDto.getName());</b>
+<b class="fc">&nbsp;            throw new RuntimeException(&quot;driver already exists with name &quot;+driverDto.getName());</b>
+&nbsp;        }
+<b class="fc">&nbsp;        Driver newDriver = mapper.map(driverDto, Driver.class);</b>
+<b class="fc">&nbsp;        Driver driver = repo.save(newDriver);</b>
+<b class="fc">&nbsp;        return mapper.map(driver, DriverDto.class);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public DriverDto updateDriver(Long id, DriverDto driverDto){
+<b class="fc">&nbsp;        if(!repo.existsById(id)){</b>
+<b class="fc">&nbsp;            throw new ResourceNotFoundException(&quot;Driver does not exists with id &quot;+id);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        Driver driver = mapper.map(driverDto, Driver.class);</b>
+<b class="fc">&nbsp;        driver.setId(id);</b>
+<b class="fc">&nbsp;        return mapper.map(repo.save(driver), DriverDto.class);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void deleteDriver(Long id){
+<b class="fc">&nbsp;        if(!repo.existsById(id)){</b>
+<b class="fc">&nbsp;            throw new ResourceNotFoundException(&quot;Driver does not exists with id &quot;+id);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        repo.deleteById(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-03-01 13:15</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,149 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > DriverController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.sketch.TestingApp.controllers</a>
+</div>
+
+<h1>Coverage Summary for Class: DriverController (com.sketch.TestingApp.controllers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DriverController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (3/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (3/6)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.sketch.TestingApp.controllers;
+&nbsp;
+&nbsp;import com.sketch.TestingApp.dto.DriverDto;
+&nbsp;import com.sketch.TestingApp.services.impl.DriverServiceImpl;
+&nbsp;import lombok.RequiredArgsConstructor;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/&quot;)
+&nbsp;@RequiredArgsConstructor
+&nbsp;public class DriverController {
+&nbsp;
+&nbsp;    private final DriverServiceImpl driverServiceImpl;
+&nbsp;
+&nbsp;    @GetMapping
+&nbsp;    public ResponseEntity&lt;List&lt;DriverDto&gt;&gt; getAllDrivers(){
+<b class="nc">&nbsp;        return ResponseEntity.ok(driverServiceImpl.getAllDrivers());</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;{id}&quot;)
+&nbsp;    public ResponseEntity&lt;DriverDto&gt; getDriverById(@PathVariable Long id){
+<b class="fc">&nbsp;        return ResponseEntity.ok(driverServiceImpl.getDriverById(id));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping
+&nbsp;    public ResponseEntity&lt;DriverDto&gt; createDriver(@RequestBody DriverDto driver){
+<b class="fc">&nbsp;        return ResponseEntity.ok(driverServiceImpl.createDriver(driver));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;{id}&quot;)
+&nbsp;    public ResponseEntity&lt;DriverDto&gt; updateDriver(@PathVariable Long id, @RequestBody DriverDto driverDto){
+<b class="fc">&nbsp;        return ResponseEntity.ok(driverServiceImpl.updateDriver(id, driverDto));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;{id}&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; deleteDriver(@PathVariable Long id){
+<b class="nc">&nbsp;        driverServiceImpl.deleteDriver(id);</b>
+<b class="nc">&nbsp;        return ResponseEntity.noContent().build();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-03-01 13:15</div>
+</div>
+</body>
+</html>
