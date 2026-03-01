@@ -1,9 +1,6 @@
 package com.sketch.TestingApp.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 
@@ -11,11 +8,15 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class DriverDto {
 
     private Long id;
 
     private String name;
+    private String team;
+    private Integer exp;
+    private Integer number;
 
     @Override
     public boolean equals(Object o) {
@@ -29,7 +30,5 @@ public class DriverDto {
         return Objects.hash(id, name, team, exp, number);
     }
 
-    private String team;
-    private Integer exp;
-    private Integer number;
+
 }
