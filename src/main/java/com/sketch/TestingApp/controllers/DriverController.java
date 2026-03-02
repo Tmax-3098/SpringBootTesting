@@ -16,6 +16,11 @@ public class DriverController {
     private final DriverServiceImpl driverServiceImpl;
 
     @GetMapping
+    public ResponseEntity<String> healthCheck(){
+        return ResponseEntity.ok("ok");
+    }
+
+    @GetMapping("all")
     public ResponseEntity<List<DriverDto>> getAllDrivers(){
         return ResponseEntity.ok(driverServiceImpl.getAllDrivers());
 
