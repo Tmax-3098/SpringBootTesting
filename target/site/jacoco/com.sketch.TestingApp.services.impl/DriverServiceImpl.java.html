@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DriverServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TestingApp</a> &gt; <a href="index.source.html" class="el_package">com.sketch.TestingApp.services.impl</a> &gt; <span class="el_source">DriverServiceImpl.java</span></div><h1>DriverServiceImpl.java</h1><pre class="source lang-java linenums">package com.sketch.TestingApp.services.impl;
+
+import com.sketch.TestingApp.dto.DriverDto;
+import com.sketch.TestingApp.entities.Driver;
+import com.sketch.TestingApp.exceptions.ResourceNotFoundException;
+import com.sketch.TestingApp.repositories.DriverRepo;
+import com.sketch.TestingApp.services.DriverService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+<span class="fc" id="L17">@Slf4j</span>
+public class DriverServiceImpl implements DriverService {
+
+    private final DriverRepo repo;
+    private final ModelMapper mapper;
+
+    public List&lt;DriverDto&gt; getAllDrivers(){
+<span class="fc" id="L24">        return repo.findAll().stream().map(</span>
+<span class="fc" id="L25">                driver -&gt; mapper.map(driver, DriverDto.class)).toList();</span>
+    }
+
+    public DriverDto getDriverById(Long id){
+<span class="fc" id="L29">        log.info(&quot;fetch driver with id {}&quot;, id);</span>
+<span class="fc" id="L30">        Driver driver = repo.findById(id).orElseThrow(() -&gt;{</span>
+<span class="fc" id="L31">                log.error(&quot;driver with id {} not found&quot;, id);</span>
+<span class="fc" id="L32">                return new ResourceNotFoundException(&quot;Driver does not exist with id &quot;+id);</span>
+        });
+<span class="fc" id="L34">        log.info(&quot;successfully fetched driver with id {}&quot;, id);</span>
+<span class="fc" id="L35">        return mapper.map(driver, DriverDto.class);</span>
+    }
+
+    public DriverDto createDriver(DriverDto driverDto){
+<span class="fc" id="L39">        List&lt;Driver&gt; drivers = repo.findByName(driverDto.getName());</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if(!drivers.isEmpty()){</span>
+<span class="fc" id="L41">            log.info(&quot;driver already exists with name {}&quot;, driverDto.getName());</span>
+<span class="fc" id="L42">            throw new RuntimeException(&quot;driver already exists with name &quot;+driverDto.getName());</span>
+        }
+<span class="fc" id="L44">        Driver newDriver = mapper.map(driverDto, Driver.class);</span>
+<span class="fc" id="L45">        Driver driver = repo.save(newDriver);</span>
+<span class="fc" id="L46">        return mapper.map(driver, DriverDto.class);</span>
+    }
+
+    public DriverDto updateDriver(Long id, DriverDto driverDto){
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if(!repo.existsById(id)){</span>
+<span class="fc" id="L51">            throw new ResourceNotFoundException(&quot;Driver does not exists with id &quot;+id);</span>
+        }
+<span class="fc" id="L53">        Driver driver = mapper.map(driverDto, Driver.class);</span>
+<span class="fc" id="L54">        driver.setId(id);</span>
+<span class="fc" id="L55">        return mapper.map(repo.save(driver), DriverDto.class);</span>
+    }
+
+    public void deleteDriver(Long id){
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if(!repo.existsById(id)){</span>
+<span class="fc" id="L60">            throw new ResourceNotFoundException(&quot;Driver does not exists with id &quot;+id);</span>
+        }
+<span class="fc" id="L62">        repo.deleteById(id);</span>
+<span class="fc" id="L63">    }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
